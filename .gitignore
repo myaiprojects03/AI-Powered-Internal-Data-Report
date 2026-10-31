@@ -1,0 +1,18 @@
+cat > .gitignore <<'EOF'
+.venv*/
+venv/
+.env
+.streamlit/secrets.toml
+
+__pycache__/
+*.pyc
+.pytest_cache/
+
+output/*
+!output/sample_report.pdf
+!output/gemini_report.pdf
+
+.vscode/
+.idea/
+.DS_Store
+EOF

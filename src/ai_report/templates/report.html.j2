@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }} - {{ period }}</title>
+<style>{{ css | safe }}</style>
+</head>
+<body>
+<main class="page">
+
+<header class="masthead">
+  <div>
+    <p class="eyebrow">{{ company }}</p>
+    <h1>{{ title }}</h1>
+    <p class="period">{{ period }} <span>compared with {{ previous_period }}</span></p>
+  </div>
+  <dl class="meta">
+    <div><dt>Generated</dt><dd>{{ generated }}</dd></div>
+    <div><dt>Data</dt><dd>{{ rows }} orders after cleaning</dd></div>
+    <div><dt>Written by</dt><dd>{{ source_label }}</dd></div>
+  </dl>
+</header>
+
+{% if notice %}<p class="notice">{{ notice }}</p>{% endif %}
+
+<section class="summary">
+  <h2>Summary</h2>
+  <p>{{ n.summary.text }}</p>
+</section>
+
+<section>
+  <h2>Key figures</h2>
+  <div class="kpis">
+  {% for k in kpis %}
+    <div class="kpi">
+      <p class="kpi-label">{{ k.label }}</p>
+      <p class="kpi-value">{{ k.value }}</p>
+      {% if k.change %}<p class="kpi-change {{ k.tone }}"><span aria-hidden="true">{{ k.arrow }}</span> {{ k.change }} <span class="vs">vs last month</span></p>{% endif %}
+    </div>
+  {% endfor %}
+  </div>
+</section>
+
+<section>
+  <h2>What needs attention</h2>
+  <ol class="insights">
+  {% for i in n.insights %}
+    <li>
+      <h3>{{ i.title }}</h3>
+      <p>{{ i.text }}</p>
+      <p class="evidence">Source figures:
+        {% for e in i.evidence %}<span class="chip">{{ facts[e].label }}: <b>{{ facts[e].display }}</b></span>{% endfor %}
+      </p>
+    </li>
+  {% endfor %}
+  </ol>
+</section>
+
+<section class="charts">
+  <h2>Charts</h2>
+  <div class="chart-grid">
+    {% for c in charts %}<figure>{{ c | safe }}</figure>{% endfor %}
+  </div>
+  <p class="caption">Grey bars are {{ previous_period.split()[0] }}, blue bars are {{ period.split()[0] }}. A red bar marks an on-time drop of {{ alert_pts }} points or more.</p>
+</section>
+
+<section class="actions-section">
+  <h2>Recommended actions</h2>
+  <table class="actions">
+    <thead><tr><th>#</th><th>Action</th><th>Owner</th><th>When</th><th>Priority</th></tr></thead>
+    <tbody>
+    {% for a in n.actions %}
+      <tr>
+        <td class="num">{{ loop.index }}</td>
+        <td><b>{{ a.action }}</b><span class="why">{{ a.why }}</span></td>
+        <td>{{ a.owner }}</td>
+        <td>{{ a.timing }}</td>
+        <td><span class="prio {{ a.priority }}">{{ a.priority | capitalize }}</span></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section class="appendix">
+  <h2>How this report was produced</h2>
+  <div class="two-col">
+    <div>
+      <h3>Accuracy checks</h3>
+      <ul>
+        <li>All figures were calculated in code from the source data. The writer only received the finished figures.</li>
+        <li>Every number in the text was checked against the figure it cites before publishing: <b>{{ "passed" if passed else "failed" }}</b>.</li>
+        <li>Statements citing figures: {{ cited_count }} of {{ statement_count }}.</li>
+      </ul>
+      <h3>Data preparation</h3>
+      <ul>
+        <li>{{ log.rows_in }} rows received, {{ log.rows_out }} used.</li>
+        {% for note in log.notes %}<li>{{ note }}</li>{% endfor %}
+      </ul>
+    </div>
+    <div>
+      <h3>Figures used in this report</h3>
+      <table class="facts">
+        <tbody>
+        {% for f in used_facts %}<tr><td>{{ f.label }}</td><td class="r">{{ f.display }}</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer>{% if is_sample %}Sample data is synthetic and anonymised. {% endif %}{{ title }}, {{ period }}.</footer>
+</main>
+</body>
+</html>
