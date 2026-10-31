@@ -1,5 +1,7 @@
 # AI-Powered Internal Data Report
 
+[![tests](https://github.com/myaiprojects03/AI-Powered-Internal-Data-Report/actions/workflows/tests.yml/badge.svg)](https://github.com/myaiprojects03/AI-Powered-Internal-Data-Report/actions/workflows/tests.yml)
+
 Turns a raw data export (CSV or Excel) into a short, plain-language report: a summary, key figures and charts, and three to five recommended actions with owners and deadlines.
 
 A free AI model writes the explanation, but **it never calculates a number**. Every figure is calculated in code, and every number the AI writes is checked against the data before the report is published.
@@ -21,13 +23,12 @@ A free AI model writes the explanation, but **it never calculates a number**. Ev
 
 ```mermaid
 flowchart LR
-    A[CSV / Excel] --> B[Load and clean]
-    B --> C[Calculate figures]
-    C --> D[Flag issues]
-    D --> E[AI writes text]
-    E --> F{Accuracy checks}
-    F -- fail --> E
-    F -- pass --> G[PDF / web app]
+    A[Data export] --> B[Clean and<br/>calculate]
+    B --> C[Flag issues]
+    C --> D[AI writes]
+    D --> E{Checks}
+    E -- fail --> D
+    E -- pass --> F[Report]
 ```
 
 | Step | Module | What it does |
@@ -162,9 +163,3 @@ The 38 tests cover data cleaning, figure accuracy against an independent calcula
 3. Under **Secrets**, add `LLM_PROVIDER` and the matching API key.
 
 `packages.txt` installs the libraries needed for PDF export. Ollama is not available on Streamlit Cloud.
-
-## Limitations
-
-- The checks prove that every number is correct and sourced. Whether a recommended action is the right call remains a human decision.
-- Free AI tiers have usage limits.
-- The sample data is synthetic. Real exports need their columns mapped as described above.
